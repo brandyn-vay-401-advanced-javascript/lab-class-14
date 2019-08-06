@@ -35,7 +35,7 @@
 * Endpoint: `/public-stuff`
   * returns a `Welcome to the Public!` message.
 * Endpoint: `/hidden-stuff`
-  * returns a `Welcome to the Public!` message.
+  * returns a `Welcome to the Hidden Room!` message.
 * Endpoint: `/something-to-read`
   * returns a `You can now Read Things!` message.
 * Endpoint: `/create-a-thing`
