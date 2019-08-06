@@ -5,9 +5,11 @@
 ### Author: Brandyn Vay
 
 ### Links and Resources
+
 * [submission PR](https://github.com/brandyn-vay-401-advanced-javascript/lab-class-14)
 * [travis](https://travis-ci.com/brandyn-vay-401-advanced-javascript/lab-class-14)
 * [back-end](https://bv-back-end-final.herokuapp.com/)
+
 
 #### Documentation
 * [api docs](http://xyz.com) (API servers)
