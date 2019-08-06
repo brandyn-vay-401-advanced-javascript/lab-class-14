@@ -55,4 +55,4 @@
   * Run npm test to start the testing process.
 
 #### UML
-Link to an image of the UML for your application and response to events
+![UML Diagram](https://github.com/brandyn-vay-401-advanced-javascript/lab-class-13/blob/master/assets/one-time-jwt-diagram.jpg)
