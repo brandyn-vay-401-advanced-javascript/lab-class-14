@@ -56,3 +56,14 @@
 
 #### UML
 ![UML Diagram](https://github.com/brandyn-vay-401-advanced-javascript/lab-class-13/blob/master/assets/one-time-jwt-diagram.jpg)
+
+#### Cheat Sheet
+1. Mongo
+  * show dbs - to show all databases in mongo
+  * use `database name` - to go into that database
+    * show collections - to show what is in the database
+    * db.`collection name`.find().pretty() - to show object in the databse
+
+2. Server
+  * echo '{"username":"`name`", "password":"`password`", "role":"`role`"}' | http post :3000/`route` - this route usually is for signup
+  * http :3000/`route` "authorization:bearer `token`" - this is usually for checking authintacation for the route
