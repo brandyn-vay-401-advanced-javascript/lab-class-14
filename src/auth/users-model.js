@@ -3,11 +3,8 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-require('./roles-model.js');
 
-const SINGLE_USE_TOKENS = !!process.env.SINGLE_USE_TOKENS;
-const TOKEN_EXPIRE = process.env.TOKEN_LIFETIME || '15m';
-const SECRET = process.env.SECRET || 'foobar';
+require('./roles-model.js');
 
 const usedTokens = new Set();
 
@@ -15,8 +12,6 @@ const users = new mongoose.Schema({
   username: {type:String, required:true, unique:true},
   password: {type:String, required:true},
   email: {type: String},
-  createdOn: {type: Number, required:true},
-  tokenInfo: {type: Object, required:false},
   role: {type: String, default:'user', enum: ['admin','editor','user', 'superuser']},
 }, {toObject:{virtuals:true}, toJSON:{virtuals:true}});
 
@@ -43,7 +38,7 @@ users.pre('findOne', function() {
 });
 
 users.methods.can = function(capability) {
-  return this.acl.capabilities.includes(capability);
+  return capabilities[this.role].includes(capability);
 };
 
 users.pre('save', function(next) {
@@ -52,7 +47,7 @@ users.pre('save', function(next) {
       this.password = hashedPassword;
       next();
     })
-    .catch(error => {throw new Error(error);});
+    .catch(console.error);
 });
 
 users.statics.createFromOauth = function(email) {
@@ -77,14 +72,12 @@ users.statics.authenticateToken = function(token) {
   if ( usedTokens.has(token ) ) {
     return Promise.reject('Invalid Token');
   }
+
+  usedTokens.add(token);
   
-  try {
-    let parsedToken = jwt.verify(token, SECRET);
-    (SINGLE_USE_TOKENS) && parsedToken.type !== 'key' && usedTokens.add(token);
-    let query = {_id: parsedToken.id};
-    return this.findOne(query);
-  } catch(e) { throw new Error('Invalid Token'); }
-  
+  let parsedToken = jwt.verify(token, process.env.SECRET);
+  let query = {_id:parsedToken.id};
+  return this.findOne(query);
 };
 
 users.statics.authenticateBasic = function(auth) {
@@ -101,22 +94,15 @@ users.methods.comparePassword = function(password) {
 
 users.methods.generateToken = function(type) {
   
+  let secret = process.env.SECRET;
+  let expires = { expiresIn: '15m' };
+
   let token = {
     id: this._id,
-    capabilities: capabilities[this.role],
-    type: type || 'user',
+    role: this.role,
   };
   
-  let options = {};
-  if ( type !== 'key' && !! TOKEN_EXPIRE ) { 
-    options = { expiresIn: TOKEN_EXPIRE };
-  }
-  
-  return jwt.sign(token, SECRET, options);
-};
-
-users.methods.generateKey = function() {
-  return this.generateToken('key');
+  return jwt.sign(token, secret, expires);
 };
 
 module.exports = mongoose.model('users', users);

@@ -1,5 +1,8 @@
 'use strict';
 
+// To add and post user 
+//echo '{"username":"m", "password":"n"}' | http post :3000/signin
+
 const User = require('./users-model.js');
 
 module.exports = (capability) => {
@@ -18,7 +21,7 @@ module.exports = (capability) => {
         return _authError();
       }
     } catch (e) {
-      _authError();
+      next(e);
     }
 
 
@@ -37,7 +40,7 @@ module.exports = (capability) => {
     function _authBearer(authString) {
       return User.authenticateToken(authString)
         .then(user => _authenticate(user))
-        .catch(_authError);
+        .catch(next);
     }
 
     function _authenticate(user) {
