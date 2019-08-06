@@ -27,7 +27,7 @@
 * `SECRET`
 
 #### Running the app
-* `npm start`
+* `nodemon`
 * Endpoint: `/signup`
   * Returns an authorization token.
 * Endpoint: `/signin`
